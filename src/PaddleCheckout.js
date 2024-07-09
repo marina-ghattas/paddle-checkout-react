@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { initializePaddle } from "@paddle/paddle-js";
 import { useEffect, useState } from "react";
 import "./PaddleCheckout.css";
@@ -5,7 +6,7 @@ import "./PaddleCheckout.css";
 export const PaddleCheckout = () => {
   // Create a local state to store Paddle instance
   const [paddle, setPaddle] = useState();
-  const [showTax, setTax] = useState(false);
+  const [showTax, setShowTax] = useState(false);
 
   // Download and initialize Paddle instance from CDN
   useEffect(() => {
@@ -35,6 +36,12 @@ export const PaddleCheckout = () => {
   const openCheckout = () => {
     paddle?.Checkout.open({
       items: [{ priceId: "pri_01j1w8a16r5bnptzm9g16fg8ch", quantity: 1 }],
+      customer: {
+        id : "ctm_01j1w9ftgyr6gaqbwmmrry811d",
+        address: {
+          id : 'add_01j2by4gk2bh6rmt4pvz5nqe6g'
+        }
+      }
     });
   };
 
@@ -43,8 +50,8 @@ export const PaddleCheckout = () => {
     if (!event.name) {
       return;
     }
-    if( event.name == 'checkout.customer.created'){
-        setTax(true);
+    if( event.name === 'checkout.customer.created'){
+      setShowTax(true);
     }
     console.log(event.data);
 
@@ -86,12 +93,12 @@ export const PaddleCheckout = () => {
   }
 
   return (
-    <div class="page-container">
+    <div className="page-container">
       <button onClick={openCheckout}>Pay service</button>
-      <div class="grid">
-        <div class="checkout-container"></div>
+      <div className="grid">
+        <div className="checkout-container"></div>
         <div>
-          <table class="items-table" style={{ marginBottom: 25 }}>
+          <table className="items-table" style={{ marginBottom: 25 }}>
             <thead>
               <tr>
                 <th>Product name</th>
@@ -108,7 +115,7 @@ export const PaddleCheckout = () => {
           {!showTax && <>Taxes will be calculated in the next step</>}
           <div style={{ visibility: showTax ? "visible" : "hidden" }}>
             <h3>Totals</h3>
-            <table>
+            <table role="none">
               <tbody>
                 <tr>
                   <td>One-time charges</td>
