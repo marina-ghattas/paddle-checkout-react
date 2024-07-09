@@ -31,18 +31,42 @@ export const PaddleCheckout = () => {
       }
     });
   }, []);
+  var request = {
+    items: [
+      {
+        quantity: 1,
+        priceId: "pri_01j1w8a16r5bnptzm9g16fg8ch",
+      },
+    ],
+    address: {
+      countryCode: "US",
+    },
+  };
 
   // Callback to open a checkout
   const openCheckout = () => {
     paddle?.Checkout.open({
       items: [{ priceId: "pri_01j1w8a16r5bnptzm9g16fg8ch", quantity: 1 }],
       customer: {
-        id : "ctm_01j1w9ftgyr6gaqbwmmrry811d",
+        id: "ctm_01j1w9ftgyr6gaqbwmmrry811d",
         address: {
-          id : 'add_01j2by4gk2bh6rmt4pvz5nqe6g'
-        }
-      }
+          id: "add_01j2by4gk2bh6rmt4pvz5nqe6g",
+        },
+      },
     });
+    paddle
+      ?.PricePreview(request)
+      .then((result) => {
+        console.log(result);
+        var items = result.data.details.lineItems;
+        console.log(items)
+        for (var item of items) {
+          console.log(item.formattedTotals.total)
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   function updateTable(event) {
@@ -50,7 +74,7 @@ export const PaddleCheckout = () => {
     if (!event.name) {
       return;
     }
-    if( event.name === 'checkout.customer.created'){
+    if (event.name === "checkout.customer.created") {
       setShowTax(true);
     }
     console.log(event.data);
